@@ -48,10 +48,10 @@ module.exports = {
             .setDescription(`\`${error.message}\``)
             .setColor("Red")
             .setTimestamp()
-            .setFooter(
-              `Requested by ${interaction.user.tag}`,
-              interaction.user.displayAvatarURL()
-            ),
+            .setFooter({
+              text: `Requested by ${interaction.user.tag}`,
+              iconURL: interaction.user.displayAvatarURL(),
+            }),
         });
       } else {
         await interaction.reply({
@@ -60,10 +60,10 @@ module.exports = {
             .setDescription(`\`${error.message}\``)
             .setColor("Red")
             .setTimestamp()
-            .setFooter(
-              `Requested by ${interaction.user.tag}`,
-              interaction.user.displayAvatarURL()
-            ),
+            .setFooter({
+              text: `Requested by ${interaction.user.tag}`,
+              iconURL: interaction.user.displayAvatarURL(),
+            }),
           ephemeral: true,
         });
       }

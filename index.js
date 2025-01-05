@@ -5,10 +5,28 @@ const {
   REST,
   Routes,
 } = require("discord.js");
+const mysql = require("mysql2/promise");
 const config = require("./config.json");
+const fs = require("fs");
+const path = require("path");
+
+const pool = mysql.createPool({
+  host: config.database.host,
+  user: config.database.user,
+  password: config.database.password,
+  database: config.database.database,
+  port: config.database.port,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+  ],
 });
 
 client.commands = new Collection();
@@ -66,6 +84,35 @@ for (const file of eventFiles) {
 
 const rest = new REST({ version: "10" }).setToken(config["token"]);
 
+async function checkAndCreateTables() {
+  const createUsersTable = `
+    CREATE TABLE IF NOT EXISTS users (
+      id VARCHAR(255) PRIMARY KEY,
+      username VARCHAR(255),
+      last_active BIGINT DEFAULT 0,
+      message_count INT DEFAULT 0,
+      xp INT DEFAULT 0
+    )
+  `;
+
+  const createFunFactsTable = `
+    CREATE TABLE IF NOT EXISTS fun_facts (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      fact TEXT NOT NULL
+    )
+  `;
+
+  try {
+    await pool.query(createUsersTable);
+    console.log("Users table checked/created successfully.");
+
+    await pool.query(createFunFactsTable);
+    console.log("Fun facts table checked/created successfully.");
+  } catch (error) {
+    console.error("Error checking/creating tables:", error);
+  }
+}
+
 async function clearGuildCommands() {
   try {
     console.log("Clearing existing guild commands...");
@@ -104,12 +151,14 @@ async function registerCommands() {
 
 async function initializeBot() {
   try {
+    await checkAndCreateTables();
+
     await clearGuildCommands();
     await registerCommands();
 
     await client.login(config["token"]);
   } catch (error) {
-    console.error("Error during the command process:", error);
+    console.error("Error during the bot initialization:", error);
   }
 }
 

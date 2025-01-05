@@ -1,5 +1,12 @@
 {
-  "token": "",
-  "clientId": "",
-  "guildId": ""
+  "token": "YOUR_BOT_TOKEN_HERE",
+  "clientId": "1318215665974509588",
+  "guildId": "1318215681384251492",
+  "database": {
+    "host": "localhost",
+    "user": "root",
+    "password": "your_password",
+    "database": "discord_bot",
+    "port": 3306
+  }
 }
