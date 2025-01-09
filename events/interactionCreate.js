@@ -9,27 +9,31 @@ module.exports = {
     if (!command) {
       if (interaction.deferred || interaction.replied) {
         await interaction.editReply({
-          embed: new EmbedBuilder()
-            .setTitle("An error occurred")
-            .setDescription("This command does not exist")
-            .setColor("Red")
-            .setTimestamp()
-            .setFooter(
-              `Requested by ${interaction.user.tag}`,
-              interaction.user.displayAvatarURL()
-            ),
+          embeds: [
+            new EmbedBuilder()
+              .setTitle("An error occurred")
+              .setDescription("This command does not exist")
+              .setColor("Red")
+              .setTimestamp()
+              .setFooter(
+                `Requested by ${interaction.user.tag}`,
+                interaction.user.displayAvatarURL()
+              ),
+          ],
         });
       } else {
         await interaction.reply({
-          embed: new EmbedBuilder()
-            .setTitle("An error occurred")
-            .setDescription("This command does not exist")
-            .setColor("Red")
-            .setTimestamp()
-            .setFooter(
-              `Requested by ${interaction.user.tag}`,
-              interaction.user.displayAvatarURL()
-            ),
+          embeds: [
+            new EmbedBuilder()
+              .setTitle("An error occurred")
+              .setDescription("This command does not exist")
+              .setColor("Red")
+              .setTimestamp()
+              .setFooter(
+                `Requested by ${interaction.user.tag}`,
+                interaction.user.displayAvatarURL()
+              ),
+          ],
           ephemeral: true,
         });
       }
@@ -43,27 +47,31 @@ module.exports = {
       );
       if (interaction.deferred || interaction.replied) {
         await interaction.editReply({
-          embed: new EmbedBuilder()
-            .setTitle("An error occurred")
-            .setDescription(`\`${error.message}\``)
-            .setColor("Red")
-            .setTimestamp()
-            .setFooter({
-              text: `Requested by ${interaction.user.tag}`,
-              iconURL: interaction.user.displayAvatarURL(),
-            }),
+          embeds: [
+            new EmbedBuilder()
+              .setTitle("An error occurred")
+              .setDescription(`\`${error.message}\``)
+              .setColor("Red")
+              .setTimestamp()
+              .setFooter({
+                text: `Requested by ${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL(),
+              }),
+          ],
         });
       } else {
         await interaction.reply({
-          embed: new EmbedBuilder()
-            .setTitle("An error occurred")
-            .setDescription(`\`${error.message}\``)
-            .setColor("Red")
-            .setTimestamp()
-            .setFooter({
-              text: `Requested by ${interaction.user.tag}`,
-              iconURL: interaction.user.displayAvatarURL(),
-            }),
+          embeds: [
+            new EmbedBuilder()
+              .setTitle("An error occurred")
+              .setDescription(`\`${error.message}\``)
+              .setColor("Red")
+              .setTimestamp()
+              .setFooter({
+                text: `Requested by ${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL(),
+              }),
+          ],
           ephemeral: true,
         });
       }
