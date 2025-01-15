@@ -8,5 +8,7 @@
     "password": "your_password",
     "database": "discord_bot",
     "port": 3306
-  }
+  },
+  "modRoleIds": ["1318978443668623541", "1318978474446159972"],
+  "logsChannelId": "1318978443668623541"
 }
