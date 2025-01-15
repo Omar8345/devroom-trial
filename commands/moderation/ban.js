@@ -125,7 +125,7 @@ module.exports = {
       interaction.options.getString("reason") || "No reason provided.";
 
     try {
-      await targetMember.ban({ reason });
+      await targetMember.ban({ reason: reason });
       await interaction.reply({
         embeds: [
           new EmbedBuilder()
