@@ -2,7 +2,6 @@ const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const db = require("../../database");
 
 module.exports = {
-  category: "utility",
   data: new SlashCommandBuilder()
     .setName("userinfo")
     .setDescription("Displays detailed information about a user.")

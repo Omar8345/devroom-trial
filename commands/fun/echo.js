@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 module.exports = {
-  category: "fun",
   data: new SlashCommandBuilder()
     .setName("echo")
     .setDescription("Echoes your input message.")

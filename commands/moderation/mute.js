@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 module.exports = {
-  category: "moderation",
   data: new SlashCommandBuilder()
     .setName("mute")
     .setDescription("Mute a user for a specified duration.")

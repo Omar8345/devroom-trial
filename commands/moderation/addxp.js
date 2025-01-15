@@ -2,7 +2,6 @@ const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const db = require("../../database");
 
 module.exports = {
-  category: "moderation",
   data: new SlashCommandBuilder()
     .setName("addxp")
     .setDescription("Grant experience points (XP) to a user.")

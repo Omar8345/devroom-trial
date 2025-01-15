@@ -2,7 +2,6 @@ const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const config = require("../../config.json");
 
 module.exports = {
-  category: "moderation",
   data: new SlashCommandBuilder()
     .setName("assignrole")
     .setDescription("Assign a role to a user.")

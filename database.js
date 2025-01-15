@@ -80,4 +80,23 @@ module.exports = {
     const [rows] = await pool.query(query, [limit]);
     return rows;
   },
+
+  async setWelcomeMessage(guildId, message) {
+    await pool.query(
+      `
+      INSERT INTO welcome_messages (guild_id, message)
+      VALUES (?, ?)
+      ON DUPLICATE KEY UPDATE message = ?;
+      `,
+      [guildId, message, message]
+    );
+  },
+
+  async getWelcomeMessage(guildId) {
+    const [rows] = await pool.query(
+      "SELECT message FROM welcome_messages WHERE guild_id = ?",
+      [guildId]
+    );
+    return rows.length ? rows[0].message : null;
+  },
 };

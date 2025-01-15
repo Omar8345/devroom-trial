@@ -2,7 +2,6 @@ const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const config = require("../../config.json");
 
 module.exports = {
-  category: "moderation",
   data: new SlashCommandBuilder()
     .setName("kick")
     .setDescription("Kick a user from the server.")

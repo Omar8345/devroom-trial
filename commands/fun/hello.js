@@ -2,7 +2,6 @@ const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const db = require("../../database");
 
 module.exports = {
-  category: "fun",
   data: new SlashCommandBuilder()
     .setName("hello")
     .setDescription("Sends a personalized greeting with a fun fact."),

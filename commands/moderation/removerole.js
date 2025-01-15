@@ -8,7 +8,6 @@ const {
 const config = require("../../config.json");
 
 module.exports = {
-  category: "moderation",
   data: new SlashCommandBuilder()
     .setName("removerole")
     .setDescription("Removes a role from a user.")
