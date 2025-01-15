@@ -69,4 +69,15 @@ module.exports = {
       [userId, username, 0, null]
     );
   },
+
+  async getTopUsers(limit) {
+    const query = `
+      SELECT id, username, xp
+      FROM users
+      ORDER BY xp DESC
+      LIMIT ?;
+    `;
+    const [rows] = await pool.query(query, [limit]);
+    return rows;
+  },
 };
