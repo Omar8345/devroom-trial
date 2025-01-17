@@ -90,7 +90,7 @@ module.exports = {
       });
     }
 
-    if (targetMember.communicationDisabledUntil) {
+    if (targetMember.isCommunicationDisabled) {
       return await interaction.reply({
         embeds: [
           new EmbedBuilder()
@@ -105,6 +105,47 @@ module.exports = {
         ],
         ephemeral: true,
       });
+    }
+
+    const userHighestRole = interaction.member.roles.cache
+      .filter((role) => config.modRoleIds.includes(role.id))
+      .sort(
+        (a, b) =>
+          config.modRoleIds.indexOf(a.id) - config.modRoleIds.indexOf(b.id)
+      )
+      .first();
+
+    const targetHighestRole =
+      targetMember.roles.cache
+        .filter((role) => config.modRoleIds.includes(role.id))
+        .sort(
+          (a, b) =>
+            config.modRoleIds.indexOf(a.id) - config.modRoleIds.indexOf(b.id)
+        )
+        .first() || null;
+
+    if (targetHighestRole) {
+      const userRoleIndex = config.modRoleIds.indexOf(userHighestRole.id);
+      const targetRoleIndex = config.modRoleIds.indexOf(targetHighestRole.id);
+
+      if (userRoleIndex >= targetRoleIndex) {
+        return await interaction.reply({
+          embeds: [
+            new EmbedBuilder()
+              .setTitle("Role Hierarchy Error")
+              .setDescription(
+                "You cannot mute this user because their moderation role is the same or higher than yours in the hierarchy."
+              )
+              .setColor("Red")
+              .setTimestamp()
+              .setFooter({
+                text: `Requested by ${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL(),
+              }),
+          ],
+          ephemeral: true,
+        });
+      }
     }
 
     if (!interaction.guild.members.me.permissions.has("MODERATE_MEMBERS")) {

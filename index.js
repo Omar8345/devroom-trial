@@ -92,7 +92,8 @@ async function checkAndCreateTables() {
       username VARCHAR(255),
       last_active BIGINT DEFAULT 0,
       message_count INT DEFAULT 0,
-      xp INT DEFAULT 0
+      xp INT DEFAULT 0,
+      points INT DEFAULT 0
     )
   `;
 
@@ -103,12 +104,22 @@ async function checkAndCreateTables() {
     )
   `;
 
+  const createWelcomeMessagesTable = `
+    CREATE TABLE IF NOT EXISTS welcome_messages (
+      guild_id VARCHAR(255) PRIMARY KEY,
+      message TEXT NOT NULL
+    )
+  `;
+
   try {
     await pool.query(createUsersTable);
     console.log("Users table checked/created successfully.");
 
     await pool.query(createFunFactsTable);
     console.log("Fun facts table checked/created successfully.");
+
+    await pool.query(createWelcomeMessagesTable);
+    console.log("Welcome messages table checked/created successfully.");
   } catch (error) {
     console.error("Error checking/creating tables:", error);
   }

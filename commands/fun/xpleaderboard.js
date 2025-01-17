@@ -3,18 +3,18 @@ const db = require("../../database");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("leaderboard")
+    .setName("xpleaderboard")
     .setDescription("Displays the top 3 users with the highest XP."),
 
   async execute(interaction) {
     try {
-      const topUsers = await db.getTopUsers(3);
+      const topUsers = await db.getTopUsersXP(3);
 
       if (!topUsers || topUsers.length === 0) {
         return await interaction.reply({
           embeds: [
             new EmbedBuilder()
-              .setTitle("Leaderboard")
+              .setTitle("XP Leaderboard")
               .setDescription("No users have earned XP yet.")
               .setColor("Yellow")
               .setTimestamp()
@@ -39,7 +39,7 @@ module.exports = {
       await interaction.reply({
         embeds: [
           new EmbedBuilder()
-            .setTitle("Leaderboard")
+            .setTitle("XP Leaderboard")
             .setDescription(leaderboard)
             .setColor("Green")
             .setTimestamp()
@@ -50,12 +50,14 @@ module.exports = {
         ],
       });
     } catch (error) {
-      console.error("Error fetching leaderboard:", error);
+      console.error("Error fetching XP leaderboard:", error);
       return await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle("Error")
-            .setDescription("An error occurred while fetching the leaderboard.")
+            .setDescription(
+              "An error occurred while fetching the XP leaderboard."
+            )
             .setColor("Red")
             .setTimestamp()
             .setFooter({

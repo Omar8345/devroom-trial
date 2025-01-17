@@ -1,25 +1,26 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const db = require("../../database");
 const config = require("../../config.json");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("ban")
-    .setDescription("Ban a user from the server.")
+    .setName("addpoints")
+    .setDescription("Grant points to a user.")
     .addUserOption((option) =>
       option
         .setName("user")
-        .setDescription("The user to ban.")
+        .setDescription("The user to grant points to.")
         .setRequired(true)
     )
-    .addStringOption((option) =>
+    .addIntegerOption((option) =>
       option
-        .setName("reason")
-        .setDescription("The reason for banning the user.")
-        .setRequired(false)
+        .setName("points")
+        .setDescription("The amount of points to grant.")
+        .setRequired(true)
     ),
 
   async execute(interaction) {
-    const hasPermission = interaction.member.permissions.has("BAN_MEMBERS");
+    const hasPermission = interaction.member.permissions.has("MANAGE_GUILD");
     if (!hasPermission) {
       return await interaction.reply({
         embeds: [
@@ -38,13 +39,14 @@ module.exports = {
     }
 
     const targetUser = interaction.options.getUser("user");
+    const pointsToAdd = interaction.options.getInteger("points");
 
     if (targetUser.id === interaction.user.id) {
       return await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle("Error")
-            .setDescription("You cannot ban yourself.")
+            .setDescription("You cannot grant points to yourself.")
             .setColor("Red")
             .setTimestamp()
             .setFooter({
@@ -67,6 +69,25 @@ module.exports = {
             .setTitle("Error")
             .setDescription(
               "The target user is not in the server or could not be found."
+            )
+            .setColor("Red")
+            .setTimestamp()
+            .setFooter({
+              text: `Requested by ${interaction.user.tag}`,
+              iconURL: interaction.user.displayAvatarURL(),
+            }),
+        ],
+        ephemeral: true,
+      });
+    }
+
+    if (pointsToAdd <= 0) {
+      return await interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setTitle("Invalid points Amount")
+            .setDescription(
+              "The amount of points to grant must be greater than 0."
             )
             .setColor("Red")
             .setTimestamp()
@@ -106,7 +127,7 @@ module.exports = {
             new EmbedBuilder()
               .setTitle("Role Hierarchy Error")
               .setDescription(
-                "You cannot ban this user because their moderation role is the same or higher than yours in the hierarchy."
+                "You cannot add points to this user because their moderation role is the same or higher than yours in the hierarchy."
               )
               .setColor("Red")
               .setTimestamp()
@@ -120,41 +141,21 @@ module.exports = {
       }
     }
 
-    if (!interaction.guild.members.me.permissions.has("BAN_MEMBERS")) {
-      return await interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setTitle("Missing Permissions")
-            .setDescription(
-              "I do not have the required permission to ban members."
-            )
-            .setColor("Red")
-            .setTimestamp()
-            .setFooter({
-              text: `Requested by ${interaction.user.tag}`,
-              iconURL: interaction.user.displayAvatarURL(),
-            }),
-        ],
-        ephemeral: true,
-      });
-    }
-
-    const reason =
-      interaction.options.getString("reason") || "No reason provided.";
-
     try {
-      await targetMember.ban({ reason: reason });
+      const userData = await db.getUser(targetUser.id);
+      if (!userData) {
+        await db.addUser(targetUser.id, targetUser.username);
+      }
+
+      await db.addPoints(targetUser.id, pointsToAdd);
+
       await interaction.reply({
         embeds: [
           new EmbedBuilder()
-            .setTitle("User Banned")
+            .setTitle("Points Granted")
             .setDescription(
-              `Successfully banned <@${targetMember.id}> from the server.`
+              `Successfully added **${pointsToAdd} points** to <@${targetUser.id}>.`
             )
-            .addFields({
-              name: "Reason",
-              value: reason ?? "No reason provided.",
-            })
             .setColor("Green")
             .setTimestamp()
             .setFooter({
@@ -171,9 +172,9 @@ module.exports = {
         logsChannel.send({
           embeds: [
             new EmbedBuilder()
-              .setTitle("User Banned")
+              .setTitle("Points Granted")
               .setDescription(
-                `**${interaction.user.tag}** banned <@${targetMember.id}> from the server.`
+                `**${interaction.user.tag}** added **${pointsToAdd} Points** to <@${targetUser.id}>.`
               )
               .addFields(
                 {
@@ -181,8 +182,8 @@ module.exports = {
                   value: interaction.user.tag,
                   inline: true,
                 },
-                { name: "User", value: `<@${targetMember.id}>`, inline: true },
-                { name: "Reason", value: reason ?? "No reason provided." }
+                { name: "User", value: `<@${targetUser.id}>`, inline: true },
+                { name: "Points Added", value: `${pointsToAdd}`, inline: true }
               )
               .setColor("Green")
               .setTimestamp()
@@ -194,12 +195,14 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.error("Error banning user:", error);
+      console.error("Error adding Points:", error);
       return await interaction.reply({
         embeds: [
           new EmbedBuilder()
-            .setTitle("Error Banning User")
-            .setDescription("There was an error banning the user.")
+            .setTitle("Error Adding Points")
+            .setDescription(
+              "An error occurred while trying to grant points to the user."
+            )
             .setColor("Red")
             .setTimestamp()
             .setFooter({

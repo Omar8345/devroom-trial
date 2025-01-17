@@ -6,6 +6,10 @@ module.exports = {
   name: Events.GuildMemberAdd,
   async execute(gMember) {
     try {
+      const userId = gMember.id;
+      if (!(await db.getUser(userId))) {
+        await db.addUser(userId, gMember.user.username);
+      }
       const welcomeMessage = await db.getWelcomeMessage(gMember.guild.id);
 
       if (!welcomeMessage) return;

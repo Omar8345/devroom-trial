@@ -45,9 +45,9 @@ module.exports = {
           xp: 0,
         };
       }
-
+      const lastActive = await db.getLastActiveTime(user.id);
       const xp = userData.xp;
-      const level = Math.floor(xp / 100); // Each level requires 100 XPs
+      const level = Math.floor(xp / 100);
       const xpForNextLevel = (level + 1) * 100;
       const progress = Math.min((xp / xpForNextLevel) * 100, 100);
 
@@ -82,6 +82,11 @@ module.exports = {
           {
             name: "Total Messages",
             value: `__**${userData.message_count}**__`,
+            inline: true,
+          },
+          {
+            name: "Last Active",
+            value: lastActive ? `<t:${lastActive}:f>` : "Unknown",
             inline: true,
           },
           { name: "XP", value: `**__${xp}__**`, inline: true },

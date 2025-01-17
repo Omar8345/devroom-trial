@@ -33,6 +33,27 @@ module.exports = {
     await pool.query("UPDATE users SET xp = xp + ? WHERE id = ?", [xp, userId]);
   },
 
+  async addPoints(userId, points) {
+    await pool.query("UPDATE users SET points = points + ? WHERE id = ?", [
+      points,
+      userId,
+    ]);
+  },
+
+  async getXP(userId) {
+    const [rows] = await pool.query("SELECT xp FROM users WHERE id = ?", [
+      userId,
+    ]);
+    return rows.length ? rows[0].xp : 0;
+  },
+
+  async getPoints(userId) {
+    const [rows] = await pool.query("SELECT points FROM users WHERE id = ?", [
+      userId,
+    ]);
+    return rows.length ? rows[0].points : 0;
+  },
+
   async updateUserLastActive(userId, timestamp) {
     const unixTimestamp = Math.floor(timestamp);
     await pool.query("UPDATE users SET last_active = ? WHERE id = ?", [
@@ -65,16 +86,27 @@ module.exports = {
 
   async addUser(userId, username) {
     await pool.query(
-      "INSERT INTO users (id, username, message_count, last_active) VALUES (?, ?, ?, ?)",
-      [userId, username, 0, null]
+      "INSERT INTO users (id, username, message_count, last_active, xp, points) VALUES (?, ?, ?, ?, ?, ?)",
+      [userId, username, 0, null, 0, 0]
     );
   },
 
-  async getTopUsers(limit) {
+  async getTopUsersXP(limit) {
     const query = `
       SELECT id, username, xp
       FROM users
       ORDER BY xp DESC
+      LIMIT ?;
+    `;
+    const [rows] = await pool.query(query, [limit]);
+    return rows;
+  },
+
+  async getTopUsersPoints(limit) {
+    const query = `
+      SELECT id, username, points
+      FROM users
+      ORDER BY points DESC
       LIMIT ?;
     `;
     const [rows] = await pool.query(query, [limit]);
