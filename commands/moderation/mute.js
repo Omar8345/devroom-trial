@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const config = require("../../config.json");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -24,8 +25,9 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    const hasPermission =
-      interaction.member.permissions.has("MODERATE_MEMBERS");
+    const hasPermission = interaction.member.roles.cache.some((role) =>
+      config.modRoleIds.includes(role.id)
+    );
     if (!hasPermission) {
       return await interaction.reply({
         embeds: [
@@ -90,7 +92,7 @@ module.exports = {
       });
     }
 
-    if (targetMember.isCommunicationDisabled) {
+    if (targetMember.isCommunicationDisabled()) {
       return await interaction.reply({
         embeds: [
           new EmbedBuilder()

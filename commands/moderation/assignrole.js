@@ -185,6 +185,25 @@ module.exports = {
       });
     }
 
+    if (role.comparePositionTo(userHighestRole) >= 0) {
+      return await interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setTitle("Role Hierarchy Error")
+            .setDescription(
+              "You cannot add this role because it is higher or equal to your highest role."
+            )
+            .setColor("Red")
+            .setTimestamp()
+            .setFooter({
+              text: `Requested by ${interaction.user.tag}`,
+              iconURL: interaction.user.displayAvatarURL(),
+            }),
+        ],
+        ephemeral: true,
+      });
+    }
+
     try {
       await targetMember.roles.add(role);
       return await interaction.reply({

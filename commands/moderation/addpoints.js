@@ -20,7 +20,9 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    const hasPermission = interaction.member.permissions.has("MANAGE_GUILD");
+    const hasPermission = interaction.member.roles.cache.some((role) =>
+      config.modRoleIds.includes(role.id)
+    );
     if (!hasPermission) {
       return await interaction.reply({
         embeds: [

@@ -41,9 +41,6 @@ module.exports = {
       const level = Math.floor(userXp / 100);
       const xpForNextLevel = (level + 1) * 100;
       const progress = Math.min((userXp / xpForNextLevel) * 100, 100);
-      console.log(
-        `User: ${user.tag} | XP: ${userXp} | Level: ${level} | Progress: ${progress}`
-      );
       const embed = new EmbedBuilder()
         .setTitle(`${member.user.tag}'s XP`)
         .setColor("Blue")

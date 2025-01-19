@@ -117,7 +117,7 @@ module.exports = {
           new EmbedBuilder()
             .setTitle("Operation canceled")
             .setDescription("The operation has been canceled.")
-            .setColor("GREEN")
+            .setColor("Red")
             .setTimestamp()
             .setFooter({
               text: `Requested by ${interaction.user.tag}`,
