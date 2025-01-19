@@ -18,16 +18,13 @@ async function clearTables() {
   try {
     const connection = await pool.getConnection();
 
-    // Disable foreign key checks
     await connection.query("SET FOREIGN_KEY_CHECKS = 0");
 
-    // Truncate each specified table
     for (const table of tablesToClear) {
       await connection.query(`TRUNCATE TABLE \`${table}\``);
       console.log(`Cleared table: ${table}`);
     }
 
-    // Re-enable foreign key checks
     await connection.query("SET FOREIGN_KEY_CHECKS = 1");
 
     console.log("All specified tables cleared successfully.");
